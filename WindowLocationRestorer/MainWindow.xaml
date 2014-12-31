@@ -1,0 +1,24 @@
+﻿<controls:MetroWindow x:Class="WindowLocationRestorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="Window Location Restorer" Height="350" Width="525" Loaded="FormLoaded">
+    <!--xmlns:tb="http://www.hardcodet.net/taskbar"-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Button Content="Save Window Positions" Margin="3" Click="SaveWindowPositionsButton_Click"/>
+            <Button Content="Restore Window Positions" Margin="3" Click="RestoreWindowPositionsButton_Click"/>
+        </StackPanel>
+        <TextBox Grid.Row="1" x:Name="MonitorsTextBox" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True"/>
+        <!--<tb:TaskbarIcon x:Name="myNotifyIcon"
+                    Visibility="Visible"
+                    ToolTipText="Fallback ToolTip for Windows xp"
+                    MenuActivation="LeftOrRightClick"
+                    PopupActivation="DoubleClick"
+                    IconSource="Assets/icon.png"/>-->
+    </Grid>
+</controls:MetroWindow>
