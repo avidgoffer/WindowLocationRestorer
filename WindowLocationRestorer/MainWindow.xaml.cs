@@ -62,15 +62,15 @@ namespace WindowLocationRestorer
                     _displays.Add(disp);
                 }
             }
-            SaveDisplays();
+            SaveData("displays.json", _displays);
         }
 
-        private async Task<List<WindowPosition>> LoadWindowPositions()
+        private static async Task<List<T>> LoadJson<T>(string filename)
         {
             string json;
             try
             {
-                using(var reader = new StreamReader("windowpositions.json"))
+                using(var reader = new StreamReader(filename))
                 {
                     json = await reader.ReadToEndAsync();
                 }
@@ -79,39 +79,24 @@ namespace WindowLocationRestorer
             {
                 json = "[]";
             }
-            return JsonConvert.DeserializeObject<List<WindowPosition>>(json);
-        }
-
-        private async void SaveWindowPositions()
-        {
-            using(var writer = new StreamWriter("windowpositions.json"))
-            {
-                await writer.WriteAsync(JsonConvert.SerializeObject(_windowPositions));
-            }
+            return JsonConvert.DeserializeObject<List<T>>(json);
         }
 
         private async Task<List<Display>> LoadDisplays()
         {
-            string json;
-            try
-            {
-                using(var reader = new StreamReader("displays.json"))
-                {
-                    json = await reader.ReadToEndAsync();
-                }
-            }
-            catch(FileNotFoundException)
-            {
-                json = "[]";
-            }
-            return JsonConvert.DeserializeObject<List<Display>>(json);
+            return await LoadJson<Display>("displays.json");
         }
 
-        private async void SaveDisplays()
+        private async Task<List<WindowPosition>> LoadWindowPositions()
         {
-            using(var writer = new StreamWriter("displays.json"))
+            return await LoadJson<WindowPosition>("windowpositions.json");
+        }
+
+        private async void SaveData(string filename, object data)
+        {
+            using(var writer = new StreamWriter(filename))
             {
-                await writer.WriteAsync(JsonConvert.SerializeObject(_displays));
+                await writer.WriteAsync(JsonConvert.SerializeObject(data));
             }
         }
 
@@ -132,7 +117,7 @@ namespace WindowLocationRestorer
                               ?? _displays.First();
                 windowPosition.LastDisplaySeenOn = display.Path;
             }
-            SaveWindowPositions();
+            SaveData("windowpositions.json", _windowPositions);
         }
 
         private void RestoreWindowPositionsButton_Click(object sender, RoutedEventArgs e)
@@ -160,7 +145,7 @@ namespace WindowLocationRestorer
                     display.Active = true;
                 }
             }
-            SaveDisplays();
+            SaveData("displays.json", _displays);
             foreach(var windowPosition in _windowPositions)
             {
                 var display = _displays.FirstOrDefault(x => x.Path == windowPosition.LastDisplaySeenOn);
